@@ -2,58 +2,60 @@
 #5/11/2023
 #By: Adam Fulton
 
-# Function to display the to-do list
-def display_list():
-    print("To-Do List:")
-    if len(todo_list) == 0:
-        print("No tasks in the list.")
-    else:
-        for i, task in enumerate(todo_list, start=1):
-            print(f"{i}. {task}")
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QListWidget, QMessageBox
 
-# Function to add a task to the list
-def add_task(task):
-    todo_list.append(task)
-    print("Task added successfully.")
+class ToDoListApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("To-Do List Application")
+        self.setGeometry(200, 200, 400, 300)
 
-# Function to remove a task from the list
-def remove_task(task):
-    if task in todo_list:
-        todo_list.remove(task)
-        print("Task removed successfully.")
-    else:
-        print("Task not found in the list.")
+        # Create widgets
+        self.label = QLabel("Task:")
+        self.entry = QLineEdit()
+        self.add_button = QPushButton("Add Task")
+        self.add_button.clicked.connect(self.add_task)
+        self.list_widget = QListWidget()
+        self.remove_button = QPushButton("Remove Task")
+        self.remove_button.clicked.connect(self.remove_task)
 
-# Function to clear all tasks from the list
-def clear_list():
-    todo_list.clear()
-    print("All tasks cleared from the list.")
+        # Create layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.label)
+        layout.addWidget(self.entry)
+        layout.addWidget(self.add_button)
+        layout.addWidget(self.list_widget)
+        layout.addWidget(self.remove_button)
 
-# Main program
-todo_list = []
+        # Create central widget and set layout
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
 
-while True:
-    print("\n==== To-Do List Application ====")
-    print("1. Display the to-do list")
-    print("2. Add a task to the list")
-    print("3. Remove a task from the list")
-    print("4. Clear all tasks from the list")
-    print("5. Exit")
+        # Initialize todo_list
+        self.todo_list = []
 
-    choice = input("Enter your choice (1-5): ")
+    def add_task(self):
+        task = self.entry.text()
+        if task:
+            self.todo_list.append(task)
+            self.list_widget.addItem(task)
+            self.entry.clear()
+        else:
+            QMessageBox.warning(self, "Warning", "Please enter a task.")
 
-    if choice == '1':
-        display_list()
-    elif choice == '2':
-        task = input("Enter the task: ")
-        add_task(task)
-    elif choice == '3':
-        task = input("Enter the task to remove: ")
-        remove_task(task)
-    elif choice == '4':
-        clear_list()
-    elif choice == '5':
-        print("Exiting the program...")
-        break
-    else:
-        print("Invalid choice. Please enter a number from 1 to 5.")
+    def remove_task(self):
+        selected_item = self.list_widget.currentItem()
+        if selected_item:
+            task = selected_item.text()
+            self.todo_list.remove(task)
+            self.list_widget.takeItem(self.list_widget.row(selected_item))
+        else:
+            QMessageBox.warning(self, "Warning", "No task selected.")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    todo_app = ToDoListApp()
+    todo_app.show()
+    sys.exit(app.exec_())
