@@ -4,6 +4,7 @@
 
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QListWidget, QMessageBox
+from PyQt5.QtGui import QFont
 
 class ToDoListApp(QMainWindow):
     def __init__(self):
@@ -11,8 +12,18 @@ class ToDoListApp(QMainWindow):
         self.setWindowTitle("To-Do List Application")
         self.setGeometry(200, 200, 400, 300)
 
+        #Set Window Size
+        self.setMinimumSize(400, 300) 
+        self.setMaximumSize(400, 300) 
+
         # Create widgets
         self.label = QLabel("Task:")
+        
+        # Change font size
+        font = QFont()
+        font.setPointSize(24)
+        self.label.setFont(font)
+
         self.entry = QLineEdit()
         self.add_button = QPushButton("Add Task")
         self.add_button.clicked.connect(self.add_task)
@@ -28,9 +39,16 @@ class ToDoListApp(QMainWindow):
         layout.addWidget(self.list_widget)
         layout.addWidget(self.remove_button)
 
+        self.entry.setStyleSheet("background-color: white;")
+        self.add_button.setStyleSheet("background-color: grey;")
+        self.list_widget.setStyleSheet("background-color: white;")
+        self.remove_button.setStyleSheet("background-color: grey;")
+
         # Create central widget and set layout
         central_widget = QWidget()
         central_widget.setLayout(layout)
+
+
         self.setCentralWidget(central_widget)
 
         # Initialize todo_list
